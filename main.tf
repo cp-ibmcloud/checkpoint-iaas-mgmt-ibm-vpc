@@ -16,47 +16,47 @@ provider "ibm" {
 
 variable "region" {
   default     = "us-east"
-  description = "(REQUIRED) The VPC Region that you want your VPC, networks and the CP virtual server to be provisioned in. To list available regions, run `ibmcloud is regions`."
+  description = "The VPC Region that you want your VPC, networks and the CP virtual server to be provisioned in. To list available regions, run `ibmcloud is regions`."
 }
 
 variable "zone" {
   default     = "us-east-3"
-  description = "(VISIBLE) The VPC Zone that you want your VPC networks and virtual servers to be provisioned in. To list available zones, run `ibmcloud is zones`."
+  description = "The VPC Zone that you want your VPC networks and virtual servers to be provisioned in. To list available zones, run `ibmcloud is zones`."
 }
 
 variable "resource_group" {
   default     = "cprg"
-  description = "(REQUIRED) The resource group to use. If unspecified, the account's default resource group is used."
+  description = "The resource group to use. If unspecified, the account's default resource group is used."
 }
 
 variable "vpc_name" {
   default     = "cpvpc"
-  description = "(REQUIRED) The name of your VPC where Checkpoint GW and Mgmt VSIs are to be provisioned."
+  description = "The name of your VPC where Checkpoint GW and Mgmt VSIs are to be provisioned."
 }
 
 variable "subnet_id1" {
   default     = "0777-06f95dd6-47e1-4a68-a2e5-24bb8aaee362"
-  description = "(REQUIRED) The id of the subnet where Checkpoint Mgmt VSI to be provisioned."
+  description = "The id of the subnet where Checkpoint Mgmt VSI to be provisioned."
 }
 
 variable "ssh_key_name" {
   default     = "development"
-  description = "(REQUIRED) The name of the public SSH key to be used when provisining Checkpoint GW and Mgmt VSIs."
+  description = "The name of the public SSH key to be used when provisining Checkpoint GW and Mgmt VSIs."
 }
 
 variable "vnf_security_group" {
   default     = "checkpointsg1"
-  description = "(VISIBLE) The security group for VNF VPC"
+  description = "The security group for VNF VPC"
 }
 
 variable "vnf_mgmt_instance_name" {
   default     = "checkpoint-management-server"
-  description = "(VISIBLE) The name of your Checkpoint Mgmt Virtual Server to be provisioned."
+  description = "The name of your Checkpoint Mgmt Virtual Server to be provisioned."
 }
 
 variable "vnf_profile" {
   default     = "bx2-2x8"
-  description = "(VISIBLE) The profile of compute cpu and memory resources to be used when provisioning cp-GW VSI. To list available profiles, run `ibmcloud is instance-profiles`."
+  description = "The profile of compute cpu and memory resources to be used when provisioning cp-GW VSI. To list available profiles, run `ibmcloud is instance-profiles`."
 }
 
 variable "vnf_vpc_mgmt_image_name" {
@@ -108,7 +108,7 @@ data "ibm_is_region" "region" {
 }
 
 data "ibm_is_zone" "zone" {
-  name = "${var.zone}"
+  name   = "${var.zone}"
   region = "${data.ibm_is_region.region.name}"
 }
 
@@ -138,7 +138,7 @@ resource "ibm_is_image" "cp_mgmt_custom_image" {
 }
 
 data "ibm_is_image" "cp_mgmt_custom_image" {
-  name       = "${ibm_is_image.cp_mgmt_custom_image.name}"
+  name = "${ibm_is_image.cp_mgmt_custom_image.name}"
 }
 
 data "ibm_is_ssh_key" "cp_ssh_pub_key" {
@@ -163,11 +163,19 @@ resource "ibm_is_security_group" "ckp_security_group" {
     resource_group = "${data.ibm_resource_group.rg.id}"
 }
 
-//security group rule to allow ssh
-resource "ibm_is_security_group_rule" "test_ckp_sg_allow_ssh" {
+#Egress All Ports
+resource "ibm_is_security_group_rule" "allow_egress_all" {
   depends_on = ["ibm_is_security_group.ckp_security_group"]
-  group     = "${ibm_is_security_group.ckp_security_group.id}"
-  direction = "inbound"
+  group      = "${ibm_is_security_group.ckp_security_group.id}"
+  direction  = "outbound"
+  remote     = "0.0.0.0/0"
+}
+
+#Ingress 22 Port
+resource "ibm_is_security_group_rule" "allow_22" {
+  depends_on = ["ibm_is_security_group.ckp_security_group"]
+  group      = "${ibm_is_security_group.ckp_security_group.id}"
+  direction  = "inbound"
   remote     = "0.0.0.0/0"
   tcp {
     port_min = 22
@@ -175,12 +183,76 @@ resource "ibm_is_security_group_rule" "test_ckp_sg_allow_ssh" {
   }
 }
 
-//security group rule to allow all for inbound
-resource "ibm_is_security_group_rule" "test_ckp_sg_rule_all" {
-  depends_on = ["ibm_is_security_group_rule.test_ckp_sg_allow_ssh"]
-  group     = "${ibm_is_security_group.ckp_security_group.id}"
-  direction = "inbound"
-  remote    = "0.0.0.0/0"
+#Ingress 443 Port
+resource "ibm_is_security_group_rule" "allow_443" {
+  depends_on = ["ibm_is_security_group.ckp_security_group"]
+  group      = "${ibm_is_security_group.ckp_security_group.id}"
+  direction  = "inbound"
+  remote     = "0.0.0.0/0"
+  tcp {
+    port_min = 443
+    port_max = 443
+  }
+}
+
+#Ingress 18200 Ports
+resource "ibm_is_security_group_rule" "allow_18200s" {
+  depends_on = ["ibm_is_security_group.ckp_security_group"]
+  group      = "${ibm_is_security_group.ckp_security_group.id}"
+  direction  = "inbound"
+  remote     = "0.0.0.0/0"
+  tcp {
+    port_min = 18209
+    port_max = 18211
+  }
+}
+
+#Ingress 18264 Port
+resource "ibm_is_security_group_rule" "allow_18264" {
+  depends_on = ["ibm_is_security_group.ckp_security_group"]
+  group      = "${ibm_is_security_group.ckp_security_group.id}"
+  direction  = "inbound"
+  remote     = "0.0.0.0/0"
+  tcp {
+    port_min = 18264
+    port_max = 18264
+  }
+}
+
+#Ingress 18100 Ports
+resource "ibm_is_security_group_rule" "allow_18100s" {
+  depends_on = ["ibm_is_security_group.ckp_security_group"]
+  group      = "${ibm_is_security_group.ckp_security_group.id}"
+  direction  = "inbound"
+  remote     = "0.0.0.0/0"
+  tcp {
+    port_min = 18190
+    port_max = 18191
+  }
+}
+
+#Ingress 19009 Port
+resource "ibm_is_security_group_rule" "allow_19009" {
+  depends_on = ["ibm_is_security_group.ckp_security_group"]
+  group      = "${ibm_is_security_group.ckp_security_group.id}"
+  direction  = "inbound"
+  remote     = "0.0.0.0/0"
+  tcp {
+    port_min = 19009
+    port_max = 19009
+  }
+}
+
+#Ingress 257 Port
+resource "ibm_is_security_group_rule" "allow_257" {
+  depends_on = ["ibm_is_security_group.ckp_security_group"]
+  group      = "${ibm_is_security_group.ckp_security_group.id}"
+  direction  = "inbound"
+  remote     = "0.0.0.0/0"
+  tcp {
+    port_min = 257
+    port_max = 257
+  }
 }
 
 
@@ -189,7 +261,7 @@ resource "ibm_is_security_group_rule" "test_ckp_sg_rule_all" {
 ##############################################################################
 
 resource "ibm_is_instance" "cp_mgmt_vsi" {
-  depends_on = ["ibm_is_security_group_rule.test_ckp_sg_rule_all", "data.ibm_is_image.cp_mgmt_custom_image"]
+  depends_on = ["ibm_is_security_group_rule.allow_257", "data.ibm_is_image.cp_mgmt_custom_image"]
   name    = "${var.vnf_mgmt_instance_name}"
   image   = "${data.ibm_is_image.cp_mgmt_custom_image.id}"
   profile = "${data.ibm_is_instance_profile.vnf_profile.name}"
@@ -204,8 +276,6 @@ resource "ibm_is_instance" "cp_mgmt_vsi" {
   zone = "${data.ibm_is_zone.zone.name}"
   keys = ["${data.ibm_is_ssh_key.cp_ssh_pub_key.id}"]
 
-  # user_data = "$(replace(file("cp-userdata.sh"), "cp-LICENSE-REPLACEMENT", var.vnf_license)"
-
   //User can configure timeouts
   timeouts {
     create = "15m"
@@ -215,6 +285,12 @@ resource "ibm_is_instance" "cp_mgmt_vsi" {
   provisioner "local-exec" {
     command = "sleep 30"
   }
+}
+
+#Create and Assoiciate Floating IP Address
+resource "ibm_is_floating_ip" "cp_mgmt_vsi_floatingip" {
+  name   = "${var.vnf_mgmt_instance_name}-fip"
+  target = "${ibm_is_instance.cp_mgmt_vsi.primary_network_interface.0.id}"
 }
 
 # Delete checkpoint management custom image from the local user after VSI creation.
