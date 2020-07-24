@@ -47,10 +47,10 @@
 |mx2-16x128 |     amd64    |   memory   |  16   |   128       |  32  |  
 |mx2-32x256 |     amd64    |   memory   |  32   |   256       |  64  |  
 
-NOTE:
-Recommended profile to managing X gateways : (bx2-4x16 = 5GW's), (mx2-4x32 = 10GW's), (mx2-8x64 = 25GW's), (mx2-16x128 = 50GW's)
-Please contact Check Point for assistance managing environments with larger than 50GW's
-Performance can be limited by the network bandwidth allocated to the profile by IBM Cloud
+NOTE: <br>
+Recommended profile to managing X gateways : (bx2-4x16 = 5GW's), (mx2-4x32 = 10GW's), (mx2-8x64 = 25GW's), (mx2-16x128 = 50GW's) <br>
+Please contact Check Point for assistance managing environments with larger than 50GW's <br>
+Performance can be limited by the network bandwidth allocated to the profile by IBM Cloud <br>
 
 
 ## Check Point Knowledgebase
