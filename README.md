@@ -7,15 +7,13 @@
 ## Deployment Parameters
 | Deploymenmt Parameter | Description |
 |-----------------------|-------------|
-| region    | Geographical IBM Cloud VPC location to deploy CloudGuard. CloudGuard is supported for deployment in all VPC Gen2 regions. See below for a list of regions and zones|
-| zone      | Availability zone inside selected region|
-| vpc_name  | Name of VPC to deploy into|
-| resource_group | Name of VPC resource group to deploy into |
-| subnet_id1 | ID (not the name) of the subnet for eth0)
-| ssh_key_name       | Name of the ssh key to apply to the CloudGuard instance |
-| vnf_security_group | Name of the security group to apply to the CloudGuard instance |
-
-
+| VPC_Region | The region where the VPC, networks, and Check Point VSI will be provisioned. To list the available regions, run  the following command: ```ibmcloud is regions```|
+| VPC_Zone   | The zone where the VPC, networks, and Check Point VSI will be provisioned. To list the available zones, run  the following command: ```ibmcloud is zones```|
+| VPC_Name  | The VPC where the Check Point VSI will be provisioned. To list the all VPCs, run  the following command: ```ibmcloud is vpcs```|
+| Resource_Group | The resource group that will be used when provisioning the Check Point VSI. If left unspecififed, the account's default resource group will be used. command: ```ibmcloud resource groups``` |
+| Subnet_ID  | The ID of the subnet where the Check Point  VSI will be provisioned.  To list the available subnets, run  the following command: ```ibmcloud is subnets```|
+| SSH_Key       | The pubic SSH Key that will be used when provisioning the Check Point  VSI. To list the available SSH keys, run  the following command: ```ibmcloud is keys``` |
+| VNF_Security_Group | The name of the security group for the VNF VPC. To list the available security groups, run  the following command: ```ibmcloud is security-groups```  |
 
 
 ## IBM Cloud Regions and Zones
@@ -26,6 +24,8 @@
 | eu-gb    | eu-gb-1, eu-gb-2, eu-gb-3 |
 | eu-de    | eu-de-1, eu-de-2, eu-de-3 |
 | jp-tok   | jp-tok-1, jp-tok-2, jp-tok-3 |
+
+To list the available regions, run the following command: ```ibmcloud is regions```
  
 ## IBM Cloud VPC Deployment Profiles
 | Profile   | Archetecture | Family     | vCPUs | Memory (GB) | Network Performance (Gbps)|       
