@@ -1,6 +1,4 @@
-<p align="center">
-  <img width="460" src="http://blog.checkpoint.com/wp-content/uploads/2018/02/CloudGuard_IaaS.jpg">
-</p>
+![](https://github.com/joe-at-cp/checkpoint-iaas-mgmt-ibm-vpc/blob/master/CloudGuard_IaaS.jpg?v=4&s=100)
 
 # Check Point CloudGuard Security Management
 
