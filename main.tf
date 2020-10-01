@@ -59,24 +59,9 @@ variable "VNF_Profile" {
   description = "The VNF profile that defines the CPU and memory resources. This will be used when provisioning the Check Point VSI."
 }
 
-variable "vnf_vpc_mgmt_image_name" {
-  default     = "checkpoint-mgmt-image1"
-  description = "(HIDDEN) The name of the Checkpoint Mgmt custom image to be provisioned in your IBM Cloud account."
-}
-
-variable "vnf_cos_image_name" {
-  default     = "Check_Point_R80.40_Cloudguard_Security_Management_Generic_06012020_EA.qcow2"
-  description = "(HIDDEN) The COS image file name"
-}
-
-variable "vnf_cos_mgmt_image_url_test" {
+variable "CP_Version" {
   default     = ""
-  description = "(HIDDEN) The COS image object url for Checkpoint Mgmt qcow2 image in test.cloud.ibm.com."
-}
-
-variable "vnf_bucket_base_name" {
-  default     = "r80.40"
-  description = "(HIDDEN) Base name of the COS bucket without the region. "
+  description = "(HIDDEN) The version of Check Point to deploy. R80.40, R81EA"
 }
 
 variable "vnf_license" {
@@ -99,7 +84,6 @@ variable "ibmcloud_api_key" {
   description = "(HIDDEN) Holds the user api key"
 }
 
-
 ##############################################################################
 # Data block 
 ##############################################################################
@@ -121,18 +105,17 @@ data "ibm_resource_group" "rg" {
   name = "${var.Resource_Group}"
 }
 
-
 ##############################################################################
 # Create Custom Image
 ##############################################################################
 
 locals {
-  image_url = "cos://${var.VPC_Region}/${var.vnf_bucket_base_name}-${var.VPC_Region}/${var.vnf_cos_image_name}"
+  image_url    = "cos://${var.VPC_Region}/checkpoint-${var.VPC_Region}/Check_Point_${var.CP_Version}_Cloudguard_Security_Management.qcow2"
 }
 
 resource "ibm_is_image" "cp_mgmt_custom_image" {
   href             = "${local.image_url}"
-  name             = "${var.vnf_vpc_mgmt_image_name}"
+  name             = "${var.VNF_CP-MGMT_Instance}"
   operating_system = "centos-7-amd64"
   resource_group   = "${data.ibm_resource_group.rg.id}"
 
