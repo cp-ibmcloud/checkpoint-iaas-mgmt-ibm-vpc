@@ -79,6 +79,11 @@ variable "ibmcloud_api_key" {
   description = "(HIDDEN) Holds the user api key"
 }
 
+variable "TF_VERSION" {
+ default = "0.12"
+ description = "terraform engine version to be used in schematics"
+}
+
 ##############################################################################
 # Data block 
 ##############################################################################
