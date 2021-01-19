@@ -2,6 +2,18 @@
 
 # Check Point CloudGuard Security Management
 
+## About
+This template will deploy a new Check Point security management server into an existing VPC environment. This deployment only requires one interface. See below for the prerequisites of this deployment type. 
+
+## Check Point Resources
+- Check Point knowledgebase article for IBM Cloud VPC deployments [SK170400](https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk170400&partition=Basic&product=Security).
+- Check Point [Full Deployment Guide](https://supportcenter.checkpoint.com/supportcenter/portal?action=portlets.DCFileAction&eventSubmit_doGetdcdetails=&fileid=112069)
+
+## Deployment Prerequisites 
+- VPC
+- Management Subnet
+- SSH Key
+
 ## Deployment Parameters
 | Deploymenmt Parameter | Description |
 |-----------------------|-------------|
@@ -50,11 +62,6 @@ NOTE: <br>
 Recommended profile to managing X gateways : (bx2-4x16 = 5GW's), (mx2-4x32 = 10GW's), (mx2-8x64 = 25GW's), (mx2-16x128 = 50GW's) <br>
 Please contact Check Point for assistance managing environments with larger than 50GW's <br>
 Performance can be limited by the network bandwidth allocated to the profile by IBM Cloud <br>
-
-
-## Check Point Knowledgebase
-Click [HERE](https://checkpoint.com/) to view the knowledgebase article for IBM Cloud VPC deployments on the Check Point Usercenter.
-
 
 ## About Check Point Software Technologies Ltd.
 Check Point Software Technologies Ltd. (www.checkpoint.com) is a leading provider of cyber security solutions to governments and corporate <br> 
