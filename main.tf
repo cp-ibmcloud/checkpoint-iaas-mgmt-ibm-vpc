@@ -59,6 +59,11 @@ variable "CP_Version" {
   description = "(HIDDEN) The version of Check Point to deploy. R80.40, R81EA"
 }
 
+variable "CP_Type" {
+  default     = "Management"
+  description = "(HIDDEN) Gateway or Management"
+}
+
 variable "vnf_license" {
   default     = ""
   description = "(HIDDEN) Optional. The BYOL license key that you want your cp virtual server in a VPC to be used by registration flow during cloud-init."
@@ -85,7 +90,7 @@ variable "TF_VERSION" {
 }
 
 ##############################################################################
-# Data block 
+# Data block
 ##############################################################################
 
 data "ibm_is_subnet" "cp_subnet1" {
@@ -96,41 +101,8 @@ data "ibm_is_region" "region" {
   name = var.VPC_Region
 }
 
-#data "ibm_is_zone" "zone" {
-#  name   = var.VPC_Zone
-#  region = data.ibm_is_region.region.name
-#}
-
 data "ibm_resource_group" "rg" {
   name = var.Resource_Group
-}
-
-##############################################################################
-# Create Custom Image
-##############################################################################
-
-# Generating random ID
-resource "random_uuid" "test" { }
-
-locals {
-  image_url    = "cos://${var.VPC_Region}/checkpoint-${var.VPC_Region}/Check_Point_${var.CP_Version}_Cloudguard_Security_Management.qcow2"
-}
-
-resource "ibm_is_image" "cp_mgmt_custom_image" {
-  depends_on       = [random_uuid.test]
-  href             = local.image_url
-  name             = "${var.VNF_CP-MGMT_Instance}-${substr(random_uuid.test.result,0,8)}"
-  operating_system = "centos-7-amd64"
-  resource_group   = data.ibm_resource_group.rg.id
-
-  timeouts {
-    create = "30m"
-    delete = "10m"
-  }
-}
-
-data "ibm_is_image" "cp_mgmt_custom_image" {
-  name = ibm_is_image.cp_mgmt_custom_image.name
 }
 
 data "ibm_is_ssh_key" "cp_ssh_pub_key" {
@@ -247,15 +219,19 @@ resource "ibm_is_security_group_rule" "allow_257" {
   }
 }
 
-
 ##############################################################################
 # Create Check Point Management Server
 ##############################################################################
 
+locals {
+  image_name = "${var.CP_Version}-${var.CP_Type}"
+  image_id = lookup(local.image_map[local.image_name], var.VPC_Region)
+}
+
 resource "ibm_is_instance" "cp_mgmt_vsi" {
-  depends_on = [ibm_is_security_group_rule.allow_257, data.ibm_is_image.cp_mgmt_custom_image]
+  depends_on = [ibm_is_security_group_rule.allow_257]
   name    = var.VNF_CP-MGMT_Instance
-  image   = ibm_is_image.cp_mgmt_custom_image.id
+  image   = local.image_id
   profile = data.ibm_is_instance_profile.vnf_profile.name
   resource_group = data.ibm_resource_group.rg.id
 
@@ -265,7 +241,7 @@ resource "ibm_is_instance" "cp_mgmt_vsi" {
     subnet = data.ibm_is_subnet.cp_subnet1.id
     security_groups = [ibm_is_security_group.ckp_security_group.id]
   }
-  
+
   vpc  = data.ibm_is_vpc.cp_vpc.id
   zone = data.ibm_is_subnet.cp_subnet1.zone
   keys = [data.ibm_is_ssh_key.cp_ssh_pub_key.id]
@@ -278,7 +254,7 @@ resource "ibm_is_instance" "cp_mgmt_vsi" {
     create = "15m"
     delete = "15m"
   }
-  # Hack to handle some race condition; will remove it once have root caused the issues.
+
   provisioner "local-exec" {
     command = "sleep 30"
   }
@@ -288,19 +264,4 @@ resource "ibm_is_instance" "cp_mgmt_vsi" {
 resource "ibm_is_floating_ip" "cp_mgmt_vsi_floatingip" {
   name   = "${var.VNF_CP-MGMT_Instance}-fip"
   target = ibm_is_instance.cp_mgmt_vsi.primary_network_interface.0.id
-}
-
-# Delete checkpoint management custom image from the local user after VSI creation.
-data "external" "delete_custom_image2" {
-  depends_on = [ibm_is_instance.cp_mgmt_vsi]
-  program    = ["bash", "${path.module}/scripts/delete_custom_image.sh"]
-
-  query = {
-    custom_image_id   = data.ibm_is_image.cp_mgmt_custom_image.id
-    region            = var.VPC_Region
-  }
-}
-
-output "delete_custom_image2" {
-  value = lookup(data.external.delete_custom_image2.result, "custom_image_id")
 }
