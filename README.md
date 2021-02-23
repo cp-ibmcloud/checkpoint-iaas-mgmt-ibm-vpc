@@ -24,7 +24,7 @@ This template will deploy a new Check Point security management server into an e
 | Subnet_ID  | The ID of the subnet where the Check Point  VSI will be provisioned.  To list the available subnets, run  the following command: ```ibmcloud is subnets```|
 | CP_Version | Version of Check Point CloudGuard to Deploy |
 | SSH_Key       | The pubic SSH Key that will be used when provisioning the Check Point  VSI. To list the available SSH keys, run  the following command: ```ibmcloud is keys``` |
-| VNF_Security_Group | The name of the security group for the VNF VPC. To list the available security groups, run  the following command: ```ibmcloud is security-groups```  |
+| VNF_Security_Group | Enter a unique name for the security-group to be applied to Check Point interfaces, run the following command to show existing security groups: ```ibmcloud is security-groups```  |
 
 
 ## IBM Cloud Regions and Zones
