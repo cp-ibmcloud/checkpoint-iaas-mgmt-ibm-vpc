@@ -41,7 +41,7 @@ variable "SSH_Key" {
 
 variable "VNF_Security_Group" {
   default     = ""
-  description = "The name of the security group for the VNF VPC."
+  description = "Enter a unique name for the security-group to be applied to Check Point interfaces."
 }
 
 variable "VNF_CP-MGMT_Instance" {
