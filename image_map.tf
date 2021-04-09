@@ -10,6 +10,7 @@ locals {
       "eu-fr2"   = "r030-29219b83-3216-4af5-bc87-ab29fb38d1c9"
       "jp-osa"   = "r034-cf3de7a6-50fc-4647-8ff5-f2543104b80f"
       "au-syd"   = "r026-ec1f6c7c-84b0-4811-9b69-aa6ff8d530cd"
+      "ca-tor"   = "r038-1817303a-d576-470c-9858-b65093a84600"
     }
 
     R81-Gateway = {
@@ -21,6 +22,7 @@ locals {
       "eu-fr2"   = "r030-57c452d3-b0e1-4dfd-897d-ff7ce1d79077"
       "jp-osa"   = "r034-7a9acb18-3a08-461a-b85c-2cbe818ceed4"
       "au-syd"   = "r026-8227d7e8-83b2-4e98-81aa-e602ef97e423"
+      "ca-tor"   = "r038-fa46a5b9-0488-4314-9b4a-578cce5d17b3"
     }
 
     R8040-Management = {
@@ -32,6 +34,7 @@ locals {
       "eu-fr2"   = "r010-7c7b39c2-3fda-4fa6-8d50-32ac3c843783"
       "jp-osa"   = "r034-10dac24d-c85d-4d2d-8c9d-36f89459cccb"
       "au-syd"   = "r026-f3b65e0d-99a3-49df-8923-7d4a0bece5aa"
+      "ca-tor"   = "r038-8000066c-4ecd-4c03-923f-7190b06aa78f"
     }
 
     R8040-Gateway = {
@@ -43,6 +46,7 @@ locals {
       "eu-fr2"   = "r030-9b9a98a2-0320-437e-81ad-0b2da02f9f99"
       "jp-osa"   = "r034-18565597-efa8-4b16-b223-a3fe24f27f45"
       "au-syd"   = "r026-ac4041b5-ef43-4517-82ac-88c6e583cc2f"
+      "ca-tor"   = "r038-ed7b046d-43ad-4d9d-971f-c0c9f4c53bd9"
     }
   
   }
