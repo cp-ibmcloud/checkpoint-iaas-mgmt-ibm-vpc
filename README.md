@@ -3,7 +3,7 @@
 # Check Point CloudGuard Security Management
 
 ## About
-This template will deploy a new Check Point security management server into an existing VPC environment. This deployment only requires one interface. See below for the prerequisites of this deployment type. 
+This template will deploy a new Check Point security management server into an existing VPC environment. This deployment only requires one interface. See below for the prerequisites of this deployment type. Before logging into the web gui you must login via ssh key set the admin password by running, "set user admin password".
 
 ## Check Point Resources
 - Check Point knowledgebase article for IBM Cloud VPC deployments [SK170400](https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk170400&partition=Basic&product=Security).
