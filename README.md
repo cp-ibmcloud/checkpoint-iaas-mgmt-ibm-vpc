@@ -14,6 +14,8 @@ If delpoying R81.20 image
   - Images are deployed with with default admin password of admin
     - set new password by running, "set user admin password"
 ## Security and compliance controls
+ - R81.10 images require the installation of JFH referenced in sk182336
+ - R81.20 images have the latest JHF installed already
     
 ## Check Point Resources
 - Check Point knowledgebase article for IBM Cloud VPC deployments [SK170400](https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk170400&partition=Basic&product=Security).
