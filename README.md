@@ -8,7 +8,7 @@ This template will deploy a new Check Point security management server into an e
 ## Before you begin
 If deploying R81.10 image
   - Before logging into the web gui you must login via ssh key set the admin password by running, "set user admin password".
-  - Important Security Update - The below software images are vulnerable to CVE-2024-24919. See sk182336 to insatll JHF.
+  - Important Security Update - The below software images are vulnerable to CVE-2024-24919. See sk182336 to install JHF.
 
 If delpoying R81.20 image
   - Images are deployed with with default admin password of admin
