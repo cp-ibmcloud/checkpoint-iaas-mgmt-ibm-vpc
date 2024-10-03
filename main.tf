@@ -281,6 +281,6 @@ resource "ibm_is_floating_ip" "cp_mgmt_vsi_floatingip" {
   name   = "${var.VNF_CP-MGMT_Instance}-fip"
   #target = ibm_is_instance.cp_mgmt_vsi.primary_network_attachment.0.id
   #target = ibm_is_instance.cp_mgmt_vsi.primary_network_interface.0.id
-  taeget = id = ibm_is_virtual_network_interface.rip_vnic_vsi_gw.id
+  target = ibm_is_virtual_network_interface.rip_vnic_vsi_gw.id
 }
 
