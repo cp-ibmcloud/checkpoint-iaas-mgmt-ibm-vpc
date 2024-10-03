@@ -88,6 +88,11 @@ variable "TF_VERSION" {
  default = "0.12"
  description = "terraform engine version to be used in schematics"
 }
+# Variables for VNI
+variable "vni_mgmt_interface_name" {
+  default     = "management-interface"
+  description = "Name of interface VNI management."
+}
 
 ##############################################################################
 # Data block
@@ -219,6 +224,17 @@ resource "ibm_is_security_group_rule" "allow_257" {
   }
 }
 
+# VNI for Interface Management 
+resource "ibm_is_virtual_network_interface" "rip_vnic_vsi_gw" {
+  #allow_ip_spoofing         = true
+  auto_delete               = false
+  enable_infrastructure_nat = true
+  name                      = var.vni_mgmt_interface_name
+  subnet                    = data.ibm_is_subnet.cp_subnet1.id
+  security_groups           = [ibm_is_security_group.ckp_security_group.id]
+  resource_group            = data.ibm_resource_group.rg.id
+}
+
 ##############################################################################
 # Create Check Point Management Server
 ##############################################################################
@@ -235,13 +251,13 @@ resource "ibm_is_instance" "cp_mgmt_vsi" {
   profile = data.ibm_is_instance_profile.vnf_profile.name
   resource_group = data.ibm_resource_group.rg.id
 
-  #eth0 - Management Interface
-  primary_network_interface {
-    name   = "eth0"
-    subnet = data.ibm_is_subnet.cp_subnet1.id
-    security_groups = [ibm_is_security_group.ckp_security_group.id]
+# Attach VNI's to VSI   
+  primary_network_attachment {
+    name = var.vni_mgmt_interface_name
+      virtual_network_interface {
+        id = ibm_is_virtual_network_interface.rip_vnic_vsi_gw.id
+       }
   }
-
   vpc  = data.ibm_is_vpc.cp_vpc.id
   zone = data.ibm_is_subnet.cp_subnet1.zone
   keys = [data.ibm_is_ssh_key.cp_ssh_pub_key.id]
@@ -263,5 +279,6 @@ resource "ibm_is_instance" "cp_mgmt_vsi" {
 #Create and Assoiciate Floating IP Address
 resource "ibm_is_floating_ip" "cp_mgmt_vsi_floatingip" {
   name   = "${var.VNF_CP-MGMT_Instance}-fip"
-  target = ibm_is_instance.cp_mgmt_vsi.primary_network_interface.0.id
+  target = ibm_is_instance.cp_mgmt_vsi.primary_network_attachment.0.id
+ #target = ibm_is_instance.cp_mgmt_vsi.primary_network_interface.0.id
 }
